@@ -509,7 +509,7 @@ def show_file_data(file):
     cprint(
         Panel(
             text.strip(),
-            title="[bold green]\x4d\x61\x78\x50\x68\x69\x73\x68\x65\x72[/][cyan] Data[/]", 
+            title="[bold green]\x50\x79\x50\x68\x69\x73\x68\x65\x72[/][cyan] Data[/]", 
             title_align="left",
             border_style="blue",
         )
@@ -1282,7 +1282,7 @@ def server():
             break
         sleep(1)
     if nr_success or cf_success or lx_success or lhr_success:
-        sprint(f"\n{info}Your urls are given below:")
+        sprint(f"\n{info}Your urls are given below:\n")
         if mode == "test":
             print(f"\n{info}URL Generation completed successfully!")
             print(f"\n{info}Ngrok: {nr_success}, CloudFlared: {cf_success}, LocalXpose: {lx_success}, LocalHR: {lhr_success}")
