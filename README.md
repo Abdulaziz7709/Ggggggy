@@ -11,7 +11,7 @@
 <br>
 <br>
   <img src="https://img.shields.io/badge/Author-KasRoudra-purple?style=flat-square">
-  <img src="https://img.shields.io/badge/Open%20Source-yes-cyan?style=flat-square">
+  <img src="https://img.shields.io/badge/Open%20Source-Yes-cyan?style=flat-square">
   <img src="https://img.shields.io/badge/Made%20in-Bangladesh-green?colorA=%23ff0000&colorB=%23017e40&style=flat-square">
   <img src="https://img.shields.io/badge/Written%20In-Python-blue?style=flat-square">
 </p>
@@ -68,11 +68,23 @@ wget https://raw.githubusercontent.com/KasRoudra/PyPhisher/main/pyphisher.py && 
  - `sudo docker pull kasroudra/pyphisher`
  - `sudo docker run --rm -it kasroudra/pyphisher`
 
+### Support
+
+OS         | Support Level
+-----------|--------------
+Linux      | Excellent
+Android    | Excellent
+iPhone     | Alpha (Recommended docker)
+MacOS      | Alpha (Recommended docker)
+Windows    | Unsupported (Use docker/virtual-box/vmware)
+BSD        | Never tested
+
 #### Options
 
 ```
 usage: pyphisher.py [-h] [-p PORT] [-o OPTION] [-t TUNNELER]
-                    [-r REGION] [-S SUBDOMAIN] [--noupdate]
+                    [-r REGION] [-s SUBDOMAIN] [-u URL] [-m MODE]
+                    [-e TROUBLESHOOT] [--nokey] [--noupdate]
 
 options:
   -h, --help            show this help message and exit
@@ -81,12 +93,20 @@ options:
                         PyPhisher's template index [Default : null]
   -t TUNNELER, --tunneler TUNNELER
                         Tunneler to be chosen while url shortening
+                        [Default : Cloudflared]
   -r REGION, --region REGION
                         Region for ngrok and loclx [Default: auto]
-  -S SUBDOMAIN, --subdomain SUBDOMAIN
+  -s SUBDOMAIN, --subdomain SUBDOMAIN
                         Subdomain for ngrok and loclx [Pro Account]
                         (Default: null)
-  --noupdate            Skip update checking
+  -u URL, --url URL     Redirection url after data capture [Default :
+                        null]
+  -m MODE, --mode MODE  Mode of PyPhisher [Default: normal]
+  -e TROUBLESHOOT, --troubleshoot TROUBLESHOOT
+                        Troubleshoot a tunneler [Default: null]
+  --nokey               Use localtunnel without ssh key [Default:
+                        False]
+  --noupdate            Skip update checking [Default : False]
 ```
 
 ### Features:
@@ -117,9 +137,10 @@ options:
  - `Python(3)`
    - `requests`
    - `bs4`
+   - `rich`
  - `PHP`
  - `SSH`
- - 200MB storage
+ - 900MB storage
  
 If not found, php and python modoules will be installed on first run
 
@@ -185,7 +206,7 @@ If not found, php and python modoules will be installed on first run
 ## Credits:
 Some base codes and templates are from [htr-tech](https://github.com/htr-tech/zphisher), otp templates are from [ignitech](https://guthub.com/ignitech/AdvPhishing) and url masking is inspired from [jaykali](https://github.com/jaykali/maskphish)
 
-####  If this tool helped you, consider staring repository. Your stars encourage me a lot!
+####  Want to show support? Just spread the word and smash the star button
 
 ## [~] Find Me on :
 

