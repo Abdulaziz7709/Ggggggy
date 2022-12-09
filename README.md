@@ -166,7 +166,11 @@ If not found, php and python modoules will be installed on first run
 ![PyPhisher](https://raw.githubusercontent.com/KasRoudra/PyPhisher/main/files/pyphisher.gif)
 
 ## Video Tutorial
-<a href="https://rebrand.ly/pyphishervideo">PyPhisher Video</a>
+<a href="https://rebrand.ly/pyphishervideo">PyPhisher in Termux</a>
+<br/>
+<a href="https://youtu.be/xIEuJkmJ8F0">PyPhisher in Kali Linux by InfoSecPat</a>
+<br/>
+<a href="https://youtu.be/ueF6fNHD8MM">PyPhisher in Kali Linux by Sathvik</a>
 
 ## Whats new in 1.8?
  - *Mailing*

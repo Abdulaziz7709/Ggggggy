@@ -228,6 +228,7 @@ websites_url = f"{repo_url}/releases/download/v{version}/websites.zip" # "https:
 # CF = Cloudflared, NR = Ngrok, LX = LocalXpose, LHR = LocalHostRun
 
 home = getenv("HOME")
+ssh_dir = f"{home}/.ssh"
 sites_dir = f"{home}/.websites"
 templates_file = f"{sites_dir}/templates.json"
 tunneler_dir = f"{home}/.tunneler"
@@ -802,13 +803,15 @@ def lx_token():
             sleep(1)
 
 def ssh_key():
-    if key and not isfile(f"{home}/.ssh/id_rsa.pub"):
-        print(f"\n{info}Please wait for a while! Press enter three times when asked for ssh key generation{nc}\n")
-        sleep(1)
-        shell("ssh-keygen")
+    if key and not isfile(f"{ssh_dir}/id_rsa"):
+        # print(f"\n{info}Please wait for a while! Press enter three times when asked for ssh key generation{nc}\n")
+        # sleep(1)
+        # shell("ssh-keygen")
+        print(nc)
+        shell(f"mkdir -p {ssh_dir} && ssh-keygen -N '' -t rsa -f {ssh_dir}/id_rsa")
     is_known = bgtask("ssh-keygen -F localhost.run").wait()
     if is_known != 0:
-        shell("ssh-keyscan -H localhost.run >> ~/.ssh/known_hosts", True)
+        shell(f"ssh-keyscan -H localhost.run >> {ssh_dir}/known_hosts", True)
 
 
 # Output urls
