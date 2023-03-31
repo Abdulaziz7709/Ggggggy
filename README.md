@@ -95,9 +95,9 @@ options:
                         Tunneler to be chosen while url shortening
                         [Default : Cloudflared]
   -r REGION, --region REGION
-                        Region for ngrok and loclx [Default: auto]
+                        Region for loclx [Default: auto]
   -s SUBDOMAIN, --subdomain SUBDOMAIN
-                        Subdomain for ngrok and loclx [Pro Account]
+                        Subdomain for loclx [Pro Account]
                         (Default: null)
   -u URL, --url URL     Redirection url after data capture [Default :
                         null]
@@ -115,8 +115,8 @@ options:
  - Easy to use
  - Possible error diagnoser
  - 77 Website templates
- - Concurrent 4 tunneling (Ngrok, Cloudflared, Loclx and LocalHostRun)
- - Upto 8 links for phishing
+ - Concurrent 3 tunneling (Cloudflared, Loclx and LocalHostRun)
+ - Upto 6 links for phishing
  - OTP Support
  - Argument support
  - Credentials mailing
@@ -198,8 +198,9 @@ If not found, php and python modoules will be installed on first run
 
 ## Solution of common issues
  - Some secured browsers like Firefox can warn for '@' prefixed links. You should use pure links or custom link to avoid it.
+ - Termux from play store in not supported. Download termux from fdroid or github
  - VPN or proxy prevents tunneling and even proper internet access. Turn them off you have issues.
- - Some android requires hotspot to start Ngrok or Cloudflared. If you face 'tunneling failed' in android, most probably your hotspot is turned off. Turn it on and keep it on untill you close PyPhisher.
+ - Some android requires hotspot to start Cloudflared and Loclx. If you face 'tunneling failed' in android, most probably your hotspot is turned off. Turn it on and keep it on untill you close PyPhisher.
  - If you want mailing credentials then you need to use app password. Visit [here](https://myaccount.google.com/u/0/apppasswords) and generate an app password, put that in `files/email.json`. You may need to enable 2FA before it.
  
 ## [!] Disclaimer
@@ -210,15 +211,20 @@ If not found, php and python modoules will be installed on first run
 ## Credits:
 Some base codes and templates are from [htr-tech](https://github.com/htr-tech/zphisher), otp templates are from [ignitech](https://guthub.com/ignitech/AdvPhishing) and url masking is inspired from [jaykali](https://github.com/jaykali/maskphish)
 
+
+### [*] Support
 ####  Want to show support? Just spread the word and smash the star button
+###### Donate BTC: ***3Lx8ikQQgZZpmFJzHDBuQHXzLXMeWMcZF3***
 
 ## [~] Find Me on :
 
-- [![Github](https://img.shields.io/badge/Github-KasRoudra-green?style=for-the-badge&logo=github)](https://github.com/KasRoudra)
+- [![Github](https://img.shields.io/badge/Github-KasRoudra-purple?style=for-the-badge&logo=github)](https://github.com/KasRoudra)
 
 - [![Gmail](https://img.shields.io/badge/Gmail-KasRoudra-green?style=for-the-badge&logo=gmail)](mailto:kasroudrakrd@gmail.com)
 
-- [![Facebook](https://img.shields.io/badge/Facebook-KasRoudra-green?style=for-the-badge&logo=facebook)](https://facebook.com/KasRoudra)
+- [![Facebook](https://img.shields.io/badge/Facebook-KasRoudra-blue?style=for-the-badge&logo=facebook)](https://facebook.com/KasRoudra)
 
-- [![Messenger](https://img.shields.io/badge/Messenger-KasRoudra-green?style=for-the-badge&logo=messenger)](https://m.me/KasRoudra)
+- [![Messenger](https://img.shields.io/badge/Messenger-KasRoudra-orange?style=for-the-badge&logo=messenger)](https://m.me/KasRoudra)
+
+- [![Telegram](https://img.shields.io/badge/Telegram-KasRoudra-indigo?style=for-the-badge&logo=telegram)](https://t.me/KasRoudra)
 
