@@ -335,12 +335,7 @@ def copy(path1, path2):
         if isdir(path2):
              rmtree(path2)
         #copytree(path1, path2)
-        for item in listdir(path1):
-            old_file = f"{path1}/{item}"
-            new_file = f"{path2}/{item}"
-            if not isdir(dirname(new_file)):
-                makedirs(dirname(new_file))
-            cp(old_file, new_file)
+        shell(f"cp -r {path1} {path2}")
     if isfile(path1):
         if isdir(path2):
             copy2(path1, path2)
