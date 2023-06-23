@@ -47,7 +47,7 @@ This project is now a part of [MaxPhisher](https://github.com/KasRoudra/MaxPhish
  - ```cd PyPhisher```
 
 ##### Install all modules
- - ```pip3 install -r files/requirements.txt```
+ - ```pip3 install -r files/requirements.txt --break-system-packages```
 
 ##### Run the tool
  - ```python3 pyphisher.py```
@@ -60,7 +60,7 @@ wget https://raw.githubusercontent.com/KasRoudra/PyPhisher/main/pyphisher.py && 
 
 ### Pip
  - `pip3 install pyphisher` [For Termux]
- - `sudo pip3 install pyphisher` [For Linux]
+ - `sudo pip3 install pyphisher  --break-system-packages` [For Linux]
  - `pyphisher`
 
 ### Docker
