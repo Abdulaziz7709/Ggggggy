@@ -34,9 +34,13 @@ jobs:
           unzip websites.zip -d sites
           # Build Docker Image for DockerHub
           docker build --tag kasroudra/pyphisher:latest .
+          [ -n "$DOCKER_VERSION" ] && docker build --tag kasroudra/pyphisher:${DOCKER_VERSION} .
 
           # Tag Docker Image for GHCR
           docker tag kasroudra/pyphisher:latest ghcr.io/kasroudra/pyphisher:latest
+          [ -n "$DOCKER_VERSION" ] && docker tag kasroudra/pyphisher:${DOCKER_VERSION} ghcr.io/kasroudra/pyphisher:${DOCKER_VERSION}
+        env:
+          DOCKER_VERSION: ${{ secrets.DOCKER_VERSION }}
 
       - name: Login to GHCR
         # Only allow main branch
@@ -58,6 +62,10 @@ jobs:
         if: github.repository == 'KasRoudra/PyPhisher' && github.ref == 'refs/heads/main'
         run: |
           # Push to DockerHub
+          [ -n "$DOCKER_VERSION" ] && docker push kasroudra/pyphisher:${DOCKER_VERSION}
           docker push kasroudra/pyphisher:latest
           # Push to GHCR
+          [ -n "$DOCKER_VERSION" ] && docker push ghcr.io/kasroudra/pyphisher:${DOCKER_VERSION}
           docker push ghcr.io/kasroudra/pyphisher:latest
+        env:
+          DOCKER_VERSION: ${{ secrets.DOCKER_VERSION }}

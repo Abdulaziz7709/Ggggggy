@@ -1272,7 +1272,7 @@ def server():
         sleep(1)
     lhr_success = False
     for i in range(10):
-        lhr_url = grep("(https://[-0-9a-z.]*.lhr.life)", lhr_file)
+        lhr_url = grep("(https://[-0-9a-z.]*.lhr.(life|pro))", lhr_file)
         if lhr_url != "":
             lhr_success = True
             break

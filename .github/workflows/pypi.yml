@@ -35,7 +35,7 @@ jobs:
         run: |
           cp -r files/pyproject.toml .
           python3 -m poetry build
-          python3 -m poetry config pypi-token.pypi ${POETRY_TOKEN}
+          python3 -m poetry config pypi-token.pypi ${PYPI_TOKEN}
           python3 -m poetry publish
         env:
-          POETRY_TOKEN: ${{ secrets.POETRY_TOKEN }}
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
