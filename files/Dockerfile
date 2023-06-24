@@ -18,7 +18,7 @@ FROM python:3
 LABEL MAINTAINER="https://github.com/KasRoudra/PyPhisher"
 
 # Working directory
-WORKDIR PyPhisher/
+WORKDIR /PyPhisher/
 # Add files 
 ADD . /PyPhisher
 
