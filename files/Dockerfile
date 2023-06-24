@@ -18,7 +18,7 @@ FROM python:3
 LABEL MAINTAINER="https://github.com/KasRoudra/PyPhisher"
 
 # Working directory
-WORKDIR PyPhisher/
+WORKDIR /PyPhisher/
 # Add files 
 ADD . /PyPhisher
 
@@ -26,7 +26,7 @@ ADD . /PyPhisher
 RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install php openssh-client -y
-RUN pip3 install -r files/requirements.txt
+RUN pip3 install -r files/requirements.txt --break-system-packages
 RUN apt-get clean
 
 # Main command

